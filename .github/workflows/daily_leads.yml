@@ -1,0 +1,27 @@
+name: Daily Lead Automation
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # This means "Every day at 9:00 AM"
+  workflow_dispatch: # This allows you to run it manually with a button
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install pandas transformers torch requests beautifulsoup4
+
+      - name: Run Automation Script
+        run: python your_script_name.py # Change this to your actual file name
+        env:
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
