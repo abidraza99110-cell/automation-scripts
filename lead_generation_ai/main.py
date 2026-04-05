@@ -1,70 +1,142 @@
 import requests
-from bs4 import BeautifulSoup
 import pandas as pd
 from transformers import pipeline
+import time
 
-# 1. Scraper Setup
-url = "https://remoteok.com/remote-engineer-jobs"
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-leads_data = []
+# ==============================
+# 1. FETCH DATA (API METHOD)
+# ==============================
+def fetch_jobs():
+    url = "https://remoteok.com/api"
+    headers = {"User-Agent": "Mozilla/5.0"}
 
-try:
-    response = requests.get(url, headers=headers, timeout=10)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    jobs = soup.find_all('tr', class_='job')
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        data = response.json()
 
-    for job in jobs[:10]:
-        title_el = job.find('h2', itemprop='title')
-        comp_el = job.find('h3', itemprop='name')
-        if title_el and comp_el:
-            leads_data.append({"Company": comp_el.text.strip(), "Role": title_el.text.strip()})
-except:
-    print("📡 Connection failed or blocked. Switching to Backup Data...")
+        jobs = []
+        # API returns a list, with the first element being metadata.
+        # We iterate from the second element onwards.
+        for job in data[1:15]:
+          company=job.get("company", "Unknown")
+          position=job.get("position", "Unknown")
+          jobs.append({"Company": company, "Role": position})
+        return jobs
+    except Exception as e:
+        print(f"❌ API failed: {e}. Using backup data.")
+        return [
+            {"Company": "Stripe", "Role": "Senior Staff Engineer"},
+            {"Company": "Airbnb", "Role": "Junior Frontend Developer"},
+            {"Company": "Tesla", "Role": "VP of Engineering"},
+            {"Company": "Shopify", "Role": "Lead Data Scientist"},
+            {"Company": "Google", "Role": "Level 3 Software Engineer"}
+        ]
 
-# --- THE BACKUP (Ensures you graduate even if blocked!) ---
-if not leads_data:
-    print("⚠️ Website blocked the request. Using 'Mock Leads' to demonstrate the AI...")
-    leads_data = [
-        {"Company": "Stripe", "Role": "Senior Staff Engineer"},
-        {"Company": "Airbnb", "Role": "Junior Frontend Developer"},
-        {"Company": "Tesla", "Role": "VP of Engineering"},
-        {"Company": "Shopify", "Role": "Lead Data Scientist"},
-        {"Company": "Google", "Role": "Level 3 Software Engineer"}
-    ]
+def filter_niche(leads_list):
+    # Professional keyword list to catch all technical roles
+    tech_keywords = ["engineer", "developer", "scientist", "programmer", "tech", "devops"]
+    filtered_leads = []
+    
+    for lead in leads_list:
+        role = lead["Role"].lower()
+        if any(keyword in role for keyword in tech_keywords):
+            filtered_leads.append(lead)
+            
+    return filtered_leads
 
-# 2. AI Classification Logic
+# ==============================
+# 2. AI CLASSIFIER
+# ==============================
 classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-candidate_labels = ["Decision Maker", "Individual Contributor"]
-final_results = []
-scores = []
+labels = ["Decision Maker", "Individual Contributor"]
 
-for lead in leads_data:
-    res = classifier(lead["Role"], candidate_labels)
-    tier = res["labels"][0]
-    conf = res["scores"][0]
+def classify_role(role):
+    result = classifier(role, labels)
+    return result["labels"][0], result["scores"][0]
 
-    # Professional Email Logic
-    if tier == "Decision Maker" and conf > 0.80:
-        email = f"Dear {lead['Company']} Leadership, we specialize in scaling {lead['Role']} workflows."
+
+# =============================
+# 3. LEAD SCORING SYSTEM
+# =============================
+def score_lead(role, confidence):
+    senior_keywords = ["VP", "Head", "Director", "Lead", "Chief"]
+
+    score = 0
+
+    if any(word.lower() in role.lower() for word in senior_keywords):
+        score += 50
+
+    score += confidence * 50
+
+    return round(score, 2)
+
+
+# ==============================
+# 4. EMAIL GENERATOR
+# ==============================
+def generate_email(company, role, tier):
+
+    if tier == "Decision Maker":
+        return f"""Subject: Helping {company} scale faster\n\nDear {company} Leadership,\n\nI noticed you're hiring for {role}.\nWe help companies streamline engineering workflows and improve team productivity.\n\nWould you be open to a quick discussion?\n\nBest regards,\n[Your Name]\n"""
     else:
-        email = f"Hi {lead['Company']} Team, I have a tool to help your {lead['Role']} work faster."
+        return f"""Subject: Tool to boost your {role} productivity\n\nHi {company} Team,\n\nI came across your opening for {role}.\nI’ve built a tool that helps developers work faster and reduce repetitive tasks.\n\nHappy to share more if you're interested.\n\nBest,\n[Your Name]\n"""
 
-    final_results.append({
-        "Company": lead['Company'],
-        "Role": lead['Role'],
-        "Tier": tier,
-        "Confidence": f"{conf:.2%}",
-        "Email": email
-    })
-    scores.append(conf)
 
-# 3. Final Summary Report
-avg_conf = sum(scores) / len(scores)
-print("\n" + "="*40)
-print(f"🎓 MASTER ANALYSIS COMPLETE")
-print(f"Average AI Confidence: {avg_conf:.2%}")
-print("="*40)
+# ==============================
+# 5. MAIN PIPELINE
+# ==============================
+def main():
+    initial_leads = fetch_jobs()
+    leads = filter_niche(initial_leads) # Filter the fetched leads
 
-df_final = pd.DataFrame(final_results)
-df_final.to_csv("graduation_leads.csv", index=False)
-print(df_final[['Company', 'Role', 'Tier', 'Confidence']])
+    results = []
+    confidences = []
+
+    print("⚙️ Processing leads...\n")
+
+    if not leads:
+        print("No leads found after filtering. Exiting.")
+        return
+
+    for lead in leads:
+        role = lead["Role"]
+        company = lead["Company"]
+
+        tier, conf = classify_role(role)
+        score = score_lead(role, conf)
+        email = generate_email(company, role, tier)
+
+        results.append({
+            "Company": company,
+            "Role": role,
+            "Tier": tier,
+            "Confidence": f"{conf:.2%}",
+            "Score": score,
+            "Email": email
+        })
+
+        confidences.append(conf)
+        time.sleep(1)  # avoid overload
+
+    # Summary
+    avg_conf = sum(confidences) / len(confidences)
+
+    print("="*50)
+    print("🎓 LEAD GENERATION REPORT")
+    print(f"Average AI Confidence: {avg_conf:.2%}")
+    print("="*50)
+
+    df = pd.DataFrame(results)
+    df = df.sort_values(by="Score", ascending=False)
+
+    df.to_csv("ai_leads_output.csv", index=False)
+
+    print(df[["Company", "Role", "Tier", "Score"]])
+
+
+# ==============================
+# RUN
+# ==============================
+if __name__ == "__main__":
+    main()
+  
