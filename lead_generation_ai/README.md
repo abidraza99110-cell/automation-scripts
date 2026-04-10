@@ -1,3 +1,6 @@
+## 📸 Sample Output
+
+![Sample Output](output.png)
 # 🚀 AI Lead Generation System
 
 ## 📌 Overview
