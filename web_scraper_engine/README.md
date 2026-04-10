@@ -1,4 +1,6 @@
+## 📸 Sample Output
 
+![Sample Output](output.png)
 ---
 
 ## 🔹 2. Web Scraper Engine
@@ -22,3 +24,4 @@ A robust scraping system that extracts structured data from websites.
 
 ## Output
 Clean dataset ready for analysis
+## 📸 Sample Output
