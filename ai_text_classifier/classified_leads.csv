@@ -1,0 +1,5 @@
+Lead_Name,Description,Lead_Type,Confidence
+John Corp,Interested in buying 50 units of luxury furniture.,High Priority Business,0.86
+Sarah Smith,Wants to buy a single chair.,Low Priority Individual,0.83
+Tech Hub UI,Looking for a full office redesign and premium desks.,High Priority Business,0.55
+Mike Ross,Just browsing for prices.,Low Priority Individual,0.98
