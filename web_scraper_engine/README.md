@@ -1,25 +1,14 @@
+## 📌 Overview
+Extracts useful data from websites and converts it into structured formats like CSV or Excel.
 
----
+## 💼 What It Does
+- Collects data such as product details, prices, or listings
+- Cleans and organizes messy website data
+- Saves results into easy-to-use files (CSV/Excel)
 
-## 🔹 2. Web Scraper Engine
-
-```markdown
-# 🌐 Web Scraper Engine
-
-## Overview
-A robust scraping system that extracts structured data from websites.
-
-## Features
-- Handles pagination
-- Cleans messy HTML data
-- Converts text to numeric values
-- Exports clean CSV files
-
-## Tech
-- requests
-- BeautifulSoup
-- pandas
-
-## Output
-Clean dataset ready for analysis
+## 💼 Why This Matters
+Companies need data for research, pricing, and decision-making.  
+This tool automates data collection and removes the need for manual copy-pasting.
 ## 📸 Sample Output
+
+![Sample Output](output.png)
