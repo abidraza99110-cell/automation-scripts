@@ -1,6 +1,4 @@
-## 📸 Sample Output
 
-![Sample Output](output.png)
 # 🤖 AI Text Classification Tool
 
 ## Overview
