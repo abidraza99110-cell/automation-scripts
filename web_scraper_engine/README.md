@@ -1,6 +1,4 @@
-## 📸 Sample Output
 
-![Sample Output](output.png)
 ---
 
 ## 🔹 2. Web Scraper Engine
