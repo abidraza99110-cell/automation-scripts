@@ -2,7 +2,7 @@
 # 🤖 AI Text Classification Tool
 
 ## Overview
-Classifies text using zero-shot AI models.
+Classifies and prioritizes business leads using AI, helping companies focus on high-value customers.
 
 ## Features
 - Sentiment detection
@@ -16,3 +16,6 @@ facebook/bart-large-mnli
 - Market analysis
 - Lead qualification
 - Content categorization
+## 📸 Sample Output
+
+![Sample Output](output.png)
