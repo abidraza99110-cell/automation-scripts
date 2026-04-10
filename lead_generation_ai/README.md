@@ -1,23 +1,15 @@
-
-# 🚀 AI Lead Generation System
-
 ## 📌 Overview
-This project automates the process of finding and qualifying business leads using AI.
+Automatically finds potential customers from the web and organizes them into a clean, usable list.
 
-## ⚙️ Features
-- Fetches job/company data via API
-- Classifies roles (Decision Maker vs Contributor)
+## 💼 What It Does
+- Collects business leads from websites
+- Identifies important decision-makers (e.g., managers, directors)
 - Scores leads based on importance
-- Generates personalized outreach emails
+- Prepares data ready for outreach
 
-## 🧠 AI Used
-- facebook/bart-large-mnli (Zero-shot classification)
+## 💼 Why This Matters
+Businesses waste time searching for clients manually.  
+This system automates lead discovery and helps focus on high-quality prospects, saving hours of work.
+## 📸 Sample Output
 
-## 📊 Output
-- CSV file with ranked leads
-- Ready-to-send email drafts
-
-## ▶️ How to Run
-```bash
-pip install -r requirements.txt
-python main.py
+![Sample Output](output.png)
