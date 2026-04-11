@@ -1,3 +1,9 @@
+Project: AI Sales Automation System
+
+Description:
+Automates lead generation, classification, scoring, and email drafting
+to help businesses find and contact high-value prospects faster.
+"""
 import requests
 import pandas as pd
 from transformers import pipeline
