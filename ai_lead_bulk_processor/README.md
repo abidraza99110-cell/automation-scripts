@@ -4,7 +4,11 @@
 This tool processes large lists of leads and automatically organizes them based on importance using AI.
 
 It helps businesses quickly identify decision-makers and separate low-quality or uncertain leads.
+This project automates a common sales problem:
 
+You have a CSV file full of leads
+You don’t know who matters most
+Manually filtering takes hours
 ---
 
 ## 💼 What It Does
@@ -19,6 +23,11 @@ It helps businesses quickly identify decision-makers and separate low-quality or
 - Exports clean CSV files
 
 ---
+Features
+📂 Upload CSV file (Google Colab supported)
+🧠 AI-based classification (Zero-shot learning)
+🎯 Identifies Decision Makers vs Contributors
+⚠️ Flags low-confidence predictions
 
 ## 💼 Why This Matters
 
