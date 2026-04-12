@@ -46,7 +46,31 @@ This system:
 ---
 
 ## ⚙️ How to Run
-install panndas  
-install transformer library
 
 1. Install dependencies:
+
+2. Run the script:
+3. pip install -r requirements.txt
+---
+
+## 📊 Impact
+
+- Processes dozens or hundreds of leads in seconds  
+- Identifies high-value prospects instantly  
+- Reduces manual filtering effort  
+
+---
+
+## 🛠 Tech Stack
+
+- Python  
+- Pandas  
+- Transformers (AI)  
+
+---
+
+## 📩 Contact
+
+📧 Email: abid.raza99110@gmail.com  
+
+Available for freelance automation and data processing projects.
