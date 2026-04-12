@@ -13,8 +13,8 @@ Extracts and cleans structured data from websites with pagination support.
 ### 🔹 AI Text Classifier
 Uses AI to classify and prioritize leads with confidence scoring.
 
-###🔹 AI Bulk processor
-handles large number of leads and seperates high value leads and manual leads 
+### 🔹 AI Bulk processor
+handles large number of csv leads file and cleans it into high value leads and manual leads
 ---
 
 ## 💼 Skills Demonstrated
