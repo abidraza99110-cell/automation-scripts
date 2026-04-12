@@ -7,31 +7,58 @@ and contributors using AI, with confidence scoring and review flags.
 """
 import pandas as pd
 from transformers import pipeline
+from google.colab import files # Import 'files' for file upload functionality
+
+print("please upload your csv file")
+user_input = input("Please enter the name of your CSV file: ")
+uploaded = files.upload()
+
+try:
+    # Use the actual uploaded file name, not user_input for pd.read_csv after files.upload()
+    # uploaded.keys() returns a list-like object of uploaded filenames
+    file_name = list(uploaded.keys())[0]
+    leads = pd.read_csv(file_name)
+
+    # Rename columns if they don't match expected names
+    if "Lead Name" in leads.columns: # Check for 'Lead Name' and rename to 'Name'
+        leads.rename(columns={"Lead Name": "Name"}, inplace=True)
+    if "Job Title" in leads.columns: # Check for 'Job Title' and rename to 'Title'
+        leads.rename(columns={"Job Title": "Title"}, inplace=True)
+
+    if "Name" not in leads.columns or "Title" not in leads.columns:
+        raise ValueError("The uploaded CSV must contain 'Name' and 'Title' columns.")
+except Exception as e:
+    print(f"Error reading CSV or missing required columns: {e}")
+    # If there's an error, it's better to stop or handle it gracefully
+    # For now, we'll re-raise the exception to prevent further errors
+    raise
 
 classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 
-leads = {
-    "Name": ["James Cook", "Amy Lin", "Robert Fox", "Sara Sun", "Kevin Hart", "Alice Green", "Tom Riddle", "Sarah Jenkins", "Bruce Wayne", "Clark Kent"],
-    "Title": ["CEO & Founder", "Junior Graphic Designer", "Director of Operations", "Intern", "Receptionist", "VP of Sales", "Data Entry Clerk", "Managing Director", "Owner", "Staff Accountant"]
-}
 candidate_labels=["Decision Maker", "Individual Contributor"]
 classified_tiers=[]
 ai_confidence=[] # Initialize ai_confidence here
 print("🧠 AI is analyzing lead seniority...")
 
 for title in leads["Title"]:
-  result = classifier(title, candidate_labels)
-  tier = result["labels"][0]
-  score = result["scores"][0]
-  print(f"Processing: {title}")
-  
-  # Safety check logic
-  if score < 0.80:
-     display_tier = f"{tier} (Needs Review)"
-  else:
-    display_tier = tier
-  classified_tiers.append(display_tier) # Move append outside the if-else to ensure it's always called
-  ai_confidence.append(f"{score:.2%}")
+  print(f"Attempting to classify title: {title}") # Added for better debugging
+  try:
+    result = classifier(title, candidate_labels)
+    tier = result["labels"][0]
+    score = result["scores"][0]
+    print(f"Processing: {title}") # Original print statement
+
+    # Safety check logic
+    if score < 0.80:
+       display_tier = f"{tier} (Needs Review)"
+    else:
+      display_tier = tier
+    classified_tiers.append(display_tier) # Move append outside the if-else to ensure it's always called
+    ai_confidence.append(f"{score:.2%}")
+  except Exception as e:
+    print(f"Error during classification for title '{title}': {e}")
+    # Depending on desired behavior, you might want to skip this title or re-raise
+    raise # Re-raising to ensure the error is fully reported
 
 
 df=pd.DataFrame({
