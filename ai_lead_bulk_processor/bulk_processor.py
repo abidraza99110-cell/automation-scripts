@@ -7,16 +7,13 @@ and contributors using AI, with confidence scoring and review flags.
 """
 import pandas as pd
 from transformers import pipeline
-from google.colab import files # Import 'files' for file upload functionality
 
 print("please upload your csv file")
-user_input = input("Please enter the name of your CSV file: ")
-uploaded = files.upload()
+file_name=input("Enter CSV file path:")
 
 try:
     # Use the actual uploaded file name, not user_input for pd.read_csv after files.upload()
     # uploaded.keys() returns a list-like object of uploaded filenames
-    file_name = list(uploaded.keys())[0]
     leads = pd.read_csv(file_name)
 
     # Rename columns if they don't match expected names
