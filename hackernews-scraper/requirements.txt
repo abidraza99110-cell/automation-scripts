@@ -1,0 +1,4 @@
+playwright
+pandas
+#then install
+playwright install
